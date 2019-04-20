@@ -4,10 +4,8 @@ JC = javac
 .java.class: ; $(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-MazeSquare.java\
-MazePanel.java\
-Maze.java\
-MazeApp.java
+ColorJPanel.java\
+ShowColors.java
 
 default: classes
 
