@@ -4,8 +4,9 @@ JC = javac
 .java.class: ; $(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-ColorJPanel.java\
-ShowColors.java
+Animation.java\
+AnimationPanel.java\
+AnimationApp.java
 
 default: classes
 

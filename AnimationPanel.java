@@ -1,3 +1,10 @@
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.MediaTracker;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.lang.Runnable;
+
 public class AnimationPanel extends JPanel implements Runnable
 {
 
@@ -24,15 +31,14 @@ public class AnimationPanel extends JPanel implements Runnable
         this.frameDelay = animation.getMillisecondsBetweenFrames();
 
         // 4.
-        this.loadProgress = new MediaTracker();
+        this.loadProgress = new MediaTracker(this);
 
         // 5. 
-        for( arrayElement : this.images)
+        for ( Image arrayElement : this.images)
         {
 
-            String filename = arrayElement.getSource();
-            Image image = getToolKit().getImage(fileName);
-
+            String fileName = String.join("_", arrayElement.getName());
+            Image image = arrayElement.getToolKit().getImage("Animations/" + fileName);
             this.loadProgress.addImage(image, 1);
 
             try
@@ -51,26 +57,60 @@ public class AnimationPanel extends JPanel implements Runnable
 
     }
 
+    public void startAnimation()
+    {
+        this.currentAnimationFrame = 0;
+        this.paused = false; 
+        new Thread(new RunnableClass()).start();
+    }
+
+    synchronized void pauseAnimation()
+    {
+        this.paused = true;
+    }
+
+    synchronized void resumeAnimation()
+    {
+        this.paused = false;
+        notify();
+    }
+    
+    synchronized void stopAnimation()
+    {
+        this.backgroundAnimationThread = null;
+        notify();
+        this.currentAnimationFrame = 0;
+    }
+
+    protected void paintComponent(Graphics graphic)
+    {
+        super.paintComponent(graphic);
+
+        if(this.images != null)
+        {
+            graphic.drawImage(this.images[this.currentAnimationFrame], this.x, this.y, this);
+        }
+    }
 
     public void run()
     {
-        loadProgress.waitForID();
+        loadProgress.waitForID(0);
 
 		// Get a reference to the current thread.
 		Thread thisThread = Thread.currentThread();
 
 		// Continue to loop while the thread has not been stopped.
-		while (animator == thisThread) 
+		while (this.backgroundAnimationThread == thisThread) 
 		{
 			try 
 			{
 				// Sleep for the required delay between frames.
-				Thread.sleep(delay);
+				Thread.sleep(this.frameDelay);
 
 				// If the thread is paused and has not been stopped, wait.
 				synchronized(this) 
 				{
-					while (threadPaused && animator == thisThread)
+					while (this.paused && this.backgroundAnimationThread == thisThread)
 					wait();
 				}
 			} 
@@ -83,43 +123,16 @@ public class AnimationPanel extends JPanel implements Runnable
 			repaint();
 
 			// Increment the current frame index (not shown).
+            if(this.currentAnimationFrame == this.images.length)
+            {
+                this.currentAnimationFrame = 0;
+            }
+            else
+            {
+                this.currentAnimationFrame++;
+            }
 		}
 
-    }
-
-    protected void paintComponent(Graphics g)
-    {
-        super();
-
-        if(images != null)
-        {
-            drawImage();
-        }
-    }
-
-    synchronized void stopAnimation()
-    {
-        this.backgroundAnimationThread = null;
-        notify();
-        this.currentAnimationFrame = 0;
-    }
-      
-    synchronized void resumeAnimation()
-    {
-        this.paused = false;
-        notify();
-    }
-      
-    synchronized void pauseAnimation()
-    {
-        this.paused = true;
-    }
-
-    void startAnimation()
-    {
-        this.currentAnimationFrame = 0;
-        this.paused = false; 
-        new Thread(new RunnableClass()).start();
     }
 
 }
