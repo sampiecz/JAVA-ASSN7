@@ -2,11 +2,17 @@ public class Animation
 {
 
     // data members
-    private final String name;
-    private final int width, height, numberOfFrames, millisecondsBetweenFrames;
+    private String name;
+    private int width, height, numberOfFrames, millisecondsBetweenFrames;
 
     // constructor
-    public Animation(String name, int width, int height, int numberOfFrames, int millisecondsBetweenFrames)
+    public Animation(
+        String name, 
+        int width, 
+        int height,
+        int numberOfFrames,
+        int millisecondsBetweenFrames
+    )
     {
         this.name = name;
         this.width = width;
@@ -15,7 +21,7 @@ public class Animation
         this.millisecondsBetweenFrames = millisecondsBetweenFrames;
     }
 
-    // accessor methods
+    // getter methods
     public String getName()
     {
         return this.name;
@@ -41,4 +47,29 @@ public class Animation
         return this.millisecondsBetweenFrames;
     }
 
+    // setter methods
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+    public void setNumberOfFrames(int numberOfFrames)
+    {
+        this.numberOfFrames = numberOfFrames;
+    }
+
+    public void setMillisecondsBetweenFrames(int millisecondsBetweenFrames)
+    {
+        this.millisecondsBetweenFrames = millisecondsBetweenFrames;
+    }
 }

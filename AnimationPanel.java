@@ -3,7 +3,8 @@ import java.awt.Graphics;
 import java.awt.MediaTracker;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.lang.Runnable;
+import java.util.Scanner;
+import java.io.IOException;
 
 public class AnimationPanel extends JPanel implements Runnable
 {

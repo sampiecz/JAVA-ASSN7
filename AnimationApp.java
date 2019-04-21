@@ -19,12 +19,19 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import javax.swing.WindowConstants;
 import java.awt.GridLayout;
+import java.util.Scanner;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.BoxLayout;
 
 public class AnimationApp extends JFrame
 {
     // Data members
-    private JPanel mainPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+    private JPanel mainPanel = new JPanel();
     private JButton startButton, pauseResumeButton, stopButton;
+	private Vector<Animation> animationVector = new Vector<Animation>();
+    private String fileName = "Animations/animations.txt";
+    private JList list;
 
     // Methods 
     public static void main(String[] args)
@@ -41,9 +48,63 @@ public class AnimationApp extends JFrame
         setVisible(true);
     }
 
+
+	public void readAnimations() throws IOException
+	{
+        Scanner fileScan = new Scanner(new File(this.fileName));
+
+		String animationRecord;
+
+		String[] subStrings;
+
+        while (fileScan.hasNext())
+        {
+            animationRecord = fileScan.nextLine();
+            
+            subStrings = animationRecord.split(":", 5);
+
+            animation = new Animation();
+
+            animation.setName(subStrings[0]);
+            animation.setWidth(Integer.parseInt(subStrings[1]));
+            animation.setHeight(Integer.parseInt(subStrings[2]));
+            animation.setNumberOfFrames(Integer.parseInt(subStrings[3]));
+            animation.setMillisecondsBetweenFrames(Integer.parseInt(subStrings[4]));
+
+            this.animationVector.addElement(animation);
+        }
+
+        Collections.sort(this.animationVector); 
+	}
+
+
     private void initComponents()
     {
-        mainPanel.add(new JLabel("Bill Amount"));
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel leftPanel = new JPanel();
+        JPanel rightPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
+
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+
+        DefaultListModel model = new DefaultListModel();
+        this.animationVector.forEach((animation) -> model.addElement(animation));
+
+        this.list = new JList(model);
+
+        leftPanel.add(list)
+
+        AnimationPanel animationPanel = new AnimationPanel()
+        rightPanel.add(animationPanel);
+
+        bottomPanel.add(this.startButton, this.pauseResumeButton, this.stopButton);
+
+        mainPanel.add(rightPanel, "East");
+        mainPanel.add(leftPanel, "West");
+        mainPanel.add(bottomPanel, "South");
 
         add(mainPanel);
     }
@@ -52,26 +113,24 @@ public class AnimationApp extends JFrame
     @Override
 	public void actionPerformed(ActionEvent event)
 	{ 
-
 		String input = event.getActionCommand();
 			
 		if(input.equals("Start"))
 		{
-            startAnimation();
+            this.list.getSelectedValue().startAnimation();
         }
         else if (input.equals("Stop"))
         {
-            stopAnimation();
+            this.list.getSelectedValue().stopAnimation();
         }
         else if (input.equals("Pause"))
         {
-             pauseAnimation();   
+             this.list.getSelectedValue().pauseAnimation();   
         }
         else if (input.equals("Resume"))
         {
-             resumeAnimation();   
+             this.list.getSelectedValue().resumeAnimation();   
         }
-
 	} 
 
     public void valueChanged(ListSelectionEvent event)
