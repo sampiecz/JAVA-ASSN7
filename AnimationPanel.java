@@ -5,6 +5,9 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Scanner;
 import java.io.IOException;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.lang.Runnable;
 
 public class AnimationPanel extends JPanel implements Runnable
 {
@@ -38,8 +41,8 @@ public class AnimationPanel extends JPanel implements Runnable
         for ( Image arrayElement : this.images)
         {
 
-            String fileName = String.join("_", arrayElement.getName());
-            Image image = arrayElement.getToolKit().getImage("Animations/" + fileName);
+            String fileName = String.join("_", animation.getName());
+            Image image = ImageIO.read(new File("Animations/" + fileName));
             this.loadProgress.addImage(image, 1);
 
             try
@@ -62,7 +65,7 @@ public class AnimationPanel extends JPanel implements Runnable
     {
         this.currentAnimationFrame = 0;
         this.paused = false; 
-        new Thread(new RunnableClass()).start();
+        Thread thread = new Thread(new AnimationPanel()).start();
     }
 
     synchronized void pauseAnimation()

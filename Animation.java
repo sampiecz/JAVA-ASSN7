@@ -72,4 +72,11 @@ public class Animation
     {
         this.millisecondsBetweenFrames = millisecondsBetweenFrames;
     }
+
+    @Override
+    public String toString()
+    {
+        return this.name;
+    }
+
 }
