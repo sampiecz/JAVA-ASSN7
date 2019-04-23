@@ -12,8 +12,10 @@
  ************************************************************/ 
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import java.awt.event.ActionListener;
 import java.awt.event.ActionListener;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,14 @@ import java.util.Scanner;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import java.util.Vector;
+import javax.swing.event.ListSelectionEvent;
+import java.io.File;
+import java.awt.BorderLayout;
+import javax.swing.DefaultListModel;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 public class AnimationApp extends JFrame
 {
@@ -63,18 +73,17 @@ public class AnimationApp extends JFrame
             
             subStrings = animationRecord.split(":", 5);
 
-            animation = new Animation();
-
-            animation.setName(subStrings[0]);
-            animation.setWidth(Integer.parseInt(subStrings[1]));
-            animation.setHeight(Integer.parseInt(subStrings[2]));
-            animation.setNumberOfFrames(Integer.parseInt(subStrings[3]));
-            animation.setMillisecondsBetweenFrames(Integer.parseInt(subStrings[4]));
-
+            Animation animation = new Animation(subStrings[0], Integer.parseInt(subStrings[1]), Integer.parseInt(subStrings[2]), Integer.parseInt(subStrings[3]), Integer.parseInt(subStrings[4]));
             this.animationVector.addElement(animation);
         }
 
-        Collections.sort(this.animationVector); 
+        Collections.sort(this.animationVector,
+		new Comparator<Animation>() {
+			@Override
+			public int compare(Animation a1, Animation a2) {
+				return (a1.getName().compareTo(a2.getName()));
+			}           
+		});
 	}
 
 
@@ -95,12 +104,14 @@ public class AnimationApp extends JFrame
 
         this.list = new JList(model);
 
-        leftPanel.add(list)
+        leftPanel.add(list);
 
-        AnimationPanel animationPanel = new AnimationPanel()
+        AnimationPanel animationPanel = new AnimationPanel();
         rightPanel.add(animationPanel);
 
-        bottomPanel.add(this.startButton, this.pauseResumeButton, this.stopButton);
+        bottomPanel.add(this.startButton);
+		bottomPanel.add(this.pauseResumeButton);
+		bottomPanel.add(this.stopButton);
 
         mainPanel.add(rightPanel, "East");
         mainPanel.add(leftPanel, "West");
@@ -109,8 +120,6 @@ public class AnimationApp extends JFrame
         add(mainPanel);
     }
 
-
-    @Override
 	public void actionPerformed(ActionEvent event)
 	{ 
 		String input = event.getActionCommand();
@@ -135,9 +144,8 @@ public class AnimationApp extends JFrame
 
     public void valueChanged(ListSelectionEvent event)
     {
-        String input = event.getActionCommand();
-        stopAnimation();
-        loadAnimation(event.getActionCommand());
+        this.list.getSelectedValue().stopAnimation();
+        this.list.getSelectValue().loadAnimation(event.getActionCommand());
     }
 
 }

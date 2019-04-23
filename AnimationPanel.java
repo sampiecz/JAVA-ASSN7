@@ -42,8 +42,15 @@ public class AnimationPanel extends JPanel implements Runnable
         {
 
             String fileName = String.join("_", animation.getName());
+            try 
+            {
             Image image = ImageIO.read(new File("Animations/" + fileName));
             this.loadProgress.addImage(image, 1);
+            }
+            catch (IOException e)
+            {
+                System.out.println(e);
+            }
 
             try
             {
@@ -65,7 +72,12 @@ public class AnimationPanel extends JPanel implements Runnable
     {
         this.currentAnimationFrame = 0;
         this.paused = false; 
-        Thread thread = new Thread(new AnimationPanel()).start();
+         Thread thread = new Thread(new Runnable() {
+                    public void run() {
+
+                       }
+                    });
+                thread.start();
     }
 
     synchronized void pauseAnimation()
@@ -98,7 +110,11 @@ public class AnimationPanel extends JPanel implements Runnable
 
     public void run()
     {
+        try {
         loadProgress.waitForID(0);
+        } catch (Exception e)
+        {
+        }
 
 		// Get a reference to the current thread.
 		Thread thisThread = Thread.currentThread();

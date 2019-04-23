@@ -77,6 +77,6 @@ public class Animation
     public String toString()
     {
         return this.name;
-    }
+    }	
 
 }
