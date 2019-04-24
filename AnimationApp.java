@@ -126,26 +126,66 @@ public class AnimationApp extends JFrame
 			
 		if(input.equals("Start"))
 		{
-            this.list.getSelectedValue().startAnimation();
+
+			for(int i = 0; i < this.animationVector.length(); i++)
+			{
+				if(this.animationVector.get(i).getName() == this.list.getSelectedValue())
+				{
+					this.animationVector.get(i).startAnimation();
+				}
+			}
+
+			this.startButton.setEnabled(false);
+			this.stopButton.setEnabled(true);
+			this.pauseResumeButton.setEnabled(true);
         }
         else if (input.equals("Stop"))
         {
-            this.list.getSelectedValue().stopAnimation();
+			for(int i = 0; i < this.animationVector.length(); i++)
+			{
+				if(this.animationVector.get(i).getName() == this.list.getSelectedValue())
+				{
+					this.animationVector.get(i).stopAnimation();
+				}
+			}
+
+
+
         }
         else if (input.equals("Pause"))
         {
-             this.list.getSelectedValue().pauseAnimation();   
-        }
+			for(int i = 0; i < this.animationVector.length(); i++)
+			{
+				if(this.animationVector.get(i).getName() == this.list.getSelectedValue())
+				{
+					this.animationVector.get(i).pauseAnimation();
+				}
+			}
+			this.pauseResumeButton.setText("Resume"); 
+		}
         else if (input.equals("Resume"))
         {
-             this.list.getSelectedValue().resumeAnimation();   
+			for(int i = 0; i < this.animationVector.length(); i++)
+			{
+				if(this.animationVector.get(i).getName() == this.list.getSelectedValue())
+				{
+					this.animationVector.get(i).resumeAnimation();
+				}
+			}
+			 this.pauseResumeButton.setText("Pause"); 
         }
 	} 
 
     public void valueChanged(ListSelectionEvent event)
     {
-        this.list.getSelectedValue().stopAnimation();
-        this.list.getSelectValue().loadAnimation(event.getActionCommand());
+		for(int i = 0; i < this.animationVector.length(); i++)
+		{
+			if(this.animationVector.get(i).getName() == this.list.getSelectedValue())
+			{
+				this.animationVector.get(i).stopAnimation();
+				this.animationVector.get(i).loadAnimation(event.getActionCommand());
+			}
+		}
     }
 
 }
